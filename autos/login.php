@@ -1,18 +1,22 @@
 <?php
 $message = "";
-if (isset($_POST["who"]) and isset($_POST["password"])) {
+if (isset($_POST["who"]) and isset($_POST["pass"])) {
     $username = $_POST["who"];
-    $password = $_POST["password"];
+    $password = $_POST["pass"];
     if ($username != "" and $password != "") {
-        $salt = "XyZzy12*_";
-        $stored_hash = '1a52e17fa899cf40fb04cfc42e6352f1'; // Pw is php123
-        $md5 = hash('md5', $salt . $password);
-        if ($md5 === $stored_hash) {
-            error_log("Login success" . $_POST['who']);
-            header("location:autos.php?name=" . urlencode($_POST["who"]));
+        if (str_contains($username, "@")) {
+            $salt = "XyZzy12*_";
+            $stored_hash = '1a52e17fa899cf40fb04cfc42e6352f1'; // Pw is php123
+            $md5 = hash('md5', $salt . $password);
+            if ($md5 === $stored_hash) {
+                error_log("Login success" . $_POST['who']);
+                header("location:autos.php?name=" . urlencode($_POST["who"]));
+            } else {
+                error_log("Login fail" . $_POST['who'] . $stored_hash);
+                $message = "Incorrect password";
+            }
         } else {
-            error_log("Login fail" . $_POST['who'] . $stored_hash);
-            $message = "Incorrect password";
+            $message = "Email must have an at-sign (@)";
         }
     } else {
         $message = "Email and password are required";
@@ -25,7 +29,7 @@ if (isset($_POST["who"]) and isset($_POST["password"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Form</title>
+    <title>Rohith k 1ab73295</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -74,17 +78,19 @@ if (isset($_POST["who"]) and isset($_POST["password"])) {
         <form action="login.php" method="POST">
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="who" required>
+                <input type="email" id="text" name="who" required>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="pass" name="pass" required>
             </div>
             <div class="form-group">
-                <button type="submit">Login</button>
+                <input type="submit" value="Log In">
             </div>
             <?php
-            if ($message) echo $message
+            if ($message) {
+                echo "<span style='color:red'>$message</span>";
+            }
             ?>
         </form>
     </div>

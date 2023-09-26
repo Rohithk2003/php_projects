@@ -7,30 +7,23 @@ if (isset($_GET["name"])) {
 } else {
     die("Name parameter missing");
 }
-if (isset($_POST["make"]) and isset($_POST["year"]) and isset($_POST["mileage"]) and isset($_POST["URL"])) {
+
+if (isset($_POST["make"]) and isset($_POST["year"]) and isset($_POST["mileage"])) {
+    echo $_POST["submit"];
+    if (isset($_POST["logout"])) {
+        header("Location: index.php");
+        return;
+    }
     $make  = $_POST["make"];
     $year = $_POST["year"];
     $mileage = $_POST["mileage"];
-    $URL = $_POST["URL"];
     if (is_numeric($year) and is_numeric($mileage)) {
         if (strlen($make) >= 1) {
-            if (str_starts_with($URL, "http://") or str_starts_with($URL, "https://")) {
-                $cURLConnection = curl_init();
-                curl_setopt($cURLConnection, CURLOPT_URL, $URL);
-                curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-                $response = curl_exec($cURLConnection);
-                if (!curl_errno($cURLConnection)) {
-                    $stmt = $pdo->prepare("insert into autos(make,year,mileage,URL) values(:mk,:yr,:mi,:ul)");
-                    $stmt->execute(array(
-                        ':mk' => $make, ':yr' => $year, ':mi' => $mileage, ':ul' => $URL
-                    ));
-                    $message = "Record inserted";
-                } else {
-                    $message = "Invalid URL";
-                }
-            } else {
-                $message = "Invalid url";
-            }
+            $stmt = $pdo->prepare("insert into autos(make,year,mileage) values(:mk,:yr,:mi)");
+            $stmt->execute(array(
+                ':mk' => $make, ':yr' => $year, ':mi' => $mileage
+            ));
+            $message = "Record inserted";
         } else {
             $message = "Make is required";
         }
@@ -45,7 +38,7 @@ if (isset($_POST["make"]) and isset($_POST["year"]) and isset($_POST["mileage"])
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Rohith k 1ab73295</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
     <style>
         table {
@@ -143,11 +136,7 @@ if (isset($_POST["make"]) and isset($_POST["year"]) and isset($_POST["mileage"])
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             echo "<tr>";
             echo "<td><b>";
-            if (isset($row["URL"])) {
-                echo "<a href='" . $row["URL"] . "'>" . $row["make"] . "</a>";
-            } else {
-                echo $row["make"];
-            }
+            echo htmlentities($row["make"]);
             echo "</b></td>;
             <td>" . $row["year"] . "</td>
             <td>" . $row["mileage"] . "</td>
@@ -159,21 +148,18 @@ if (isset($_POST["make"]) and isset($_POST["year"]) and isset($_POST["mileage"])
     <form method="post">
         <div class="form-group">
             <label for="make">Make:</label>
-            <input type="text" id="make" name="make" placeholder="Enter car make" required>
+            <input type="text" id="make" name="make" placeholder="Enter car make">
         </div>
         <div class="form-group">
             <label for="year">Year:</label>
-            <input type="number" id="year" name="year" placeholder="Enter car year" required>
+            <input type="number" id="year" name="year" placeholder="Enter car year">
         </div>
         <div class="form-group">
             <label for="mileage">Mileage:</label>
-            <input type="number" id="mileage" name="mileage" placeholder="Enter car mileage" required>
+            <input type="number" id="mileage" name="mileage" placeholder="Enter car mileage">
         </div>
-        <div class="form-group">
-            <label for="URL">URL:</label>
-            <input type="text" id="URL" name="URL" placeholder="Enter URL of image" required>
-        </div>
-        <button type="submit">Submit</button>
+        <button type="submit" name="add">Add</button>
+        <button type="submit" name="logout">logout</button>
         <?php
         if ($message === "Record inserted") {
             echo "<span style='color:green'>$message</span>";
