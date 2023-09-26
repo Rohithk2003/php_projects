@@ -12,14 +12,8 @@
     <h1>
         Welcome to AUTOS Database
     </h1>
-    <?php
-    require_once "pdo.php";
-    $stmt = $pdo->query("select * from users");
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        print_r($row["user_id"]);
-        echo "\n";
-    }
-    ?>
+    <a href="login.php">Please Log In</a>
+    <p>Attempt to go to <a href="autos.php">autos.php</a> without loggin in - it should fail with an error message.</p>
 </body>
 
 </html>

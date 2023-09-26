@@ -1,4 +1,5 @@
 <?php
+$message = "";
 if (isset($_POST["who"]) and isset($_POST["password"])) {
     $username = $_POST["who"];
     $password = $_POST["password"];
@@ -7,7 +8,7 @@ if (isset($_POST["who"]) and isset($_POST["password"])) {
         $stored_hash = '1a52e17fa899cf40fb04cfc42e6352f1'; // Pw is php123
         $md5 = hash('md5', $salt . $password);
         if ($md5 === $stored_hash) {
-            error_log("Login success" . $_POST['who']); 
+            error_log("Login success" . $_POST['who']);
             header("location:autos.php?name=" . urlencode($_POST["who"]));
         } else {
             error_log("Login fail" . $_POST['who'] . $stored_hash);
@@ -26,13 +27,12 @@ if (isset($_POST["who"]) and isset($_POST["password"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
     <style>
-        /* Add some basic styling for the form */
         body {
             font-family: Arial, sans-serif;
         }
 
         .login-container {
-            width: 300px;
+            width: 400px;
             margin: 0 auto;
             padding: 20px;
             border: 1px solid #ccc;
@@ -50,7 +50,7 @@ if (isset($_POST["who"]) and isset($_POST["password"])) {
         }
 
         .form-group input {
-            width: 100%;
+            width: 95%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
