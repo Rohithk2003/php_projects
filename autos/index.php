@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,11 +12,8 @@
 </head>
 
 <body>
-    <h1>
-        Welcome to AUTOS Database
-    </h1>
+    <h1>Welcome to Autos Database</h1>
     <a href="login.php">Please Log In</a>
-    <p>Attempt to go to <a href="autos.php">autos.php</a> without loggin in - it should fail with an error message.</p>
 </body>
 
 </html>

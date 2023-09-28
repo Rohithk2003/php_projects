@@ -1,25 +1,22 @@
 <?php
+session_start();
 $message = "";
-if (isset($_POST["who"]) and isset($_POST["pass"])) {
-    $username = $_POST["who"];
+if (isset($_POST["email"]) and isset($_POST["pass"])) {
+    $email = $_POST["email"];
     $password = $_POST["pass"];
-    if ($username != "" and $password != "") {
-        if (str_contains($username, "@")) {
-            $salt = "XyZzy12*_";
-            $stored_hash = '1a52e17fa899cf40fb04cfc42e6352f1'; // Pw is php123
-            $md5 = hash('md5', $salt . $password);
-            if ($md5 === $stored_hash) {
-                error_log("Login success" . $_POST['who']);
-                header("location:autos.php?name=" . urlencode($_POST["who"]));
-            } else {
-                error_log("Login fail" . $_POST['who'] . $stored_hash);
-                $message = "Incorrect password";
-            }
-        } else {
-            $message = "Email must have an at-sign (@)";
-        }
+    $salt = "XyZzy12*_";
+    $stored_hash = '1a52e17fa899cf40fb04cfc42e6352f1'; // Pw is php123
+    $md5 = hash('md5', $salt . $password);
+    echo "hello";
+    if ($md5 === $stored_hash) {
+        $_SESSION["name"] = $email;
+        $_SESSION["success"] = true;
+        header("location:view.php");
+        return;
     } else {
-        $message = "Email and password are required";
+        $_SESSION["error"] = "Incorrect password";
+        header("location:login.php");
+        return;
     }
 }
 ?>
@@ -78,7 +75,7 @@ if (isset($_POST["who"]) and isset($_POST["pass"])) {
         <form action="login.php" method="POST">
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="text" name="who" required>
+                <input type="email" id="text" name="email" required>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
@@ -88,8 +85,9 @@ if (isset($_POST["who"]) and isset($_POST["pass"])) {
                 <input type="submit" value="Log In">
             </div>
             <?php
-            if ($message) {
-                echo "<span style='color:red'>$message</span>";
+            if (isset($_SESSION["error"])) {
+                echo ('<p style="color: red;">' . htmlentities($_SESSION['error']) .  "</p>");
+                unset($_SESSION['error']);
             }
             ?>
         </form>
